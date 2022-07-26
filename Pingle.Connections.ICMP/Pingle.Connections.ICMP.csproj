@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Shared\Shared.csproj" />
+      <ProjectReference Include="..\Pingle.Shared\Pingle.Shared.csproj" />
     </ItemGroup>
 
 </Project>

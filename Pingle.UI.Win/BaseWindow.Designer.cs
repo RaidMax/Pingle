@@ -1,4 +1,4 @@
-﻿namespace UI.Win;
+﻿namespace Pingle.UI.Win;
 
 partial class BaseWindow
 {

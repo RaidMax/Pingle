@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI.Win", "UI.Win\UI.Win.csproj", "{623F93D3-0B4A-4CEC-9D8C-804A91AE7BA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.UI.Win", "Pingle.UI.Win\Pingle.UI.Win.csproj", "{623F93D3-0B4A-4CEC-9D8C-804A91AE7BA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connections.ICMP", "Connections.ICMP\Connections.ICMP.csproj", "{CBBC5504-8026-4AE3-9396-C557B57570D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.Connections.ICMP", "Pingle.Connections.ICMP\Pingle.Connections.ICMP.csproj", "{CBBC5504-8026-4AE3-9396-C557B57570D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{55F7F6FF-65EA-4C75-B46B-CAE06623DCF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.Shared", "Pingle.Shared\Pingle.Shared.csproj", "{55F7F6FF-65EA-4C75-B46B-CAE06623DCF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

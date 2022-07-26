@@ -1,4 +1,4 @@
-namespace UI.Win;
+namespace Pingle.UI.Win;
 
 public partial class BaseWindow : Form
 {
