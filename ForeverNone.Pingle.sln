@@ -1,10 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32120.378
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.UI.Win", "Pingle.UI.Win\Pingle.UI.Win.csproj", "{623F93D3-0B4A-4CEC-9D8C-804A91AE7BA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.Connections.ICMP", "Pingle.Connections.ICMP\Pingle.Connections.ICMP.csproj", "{CBBC5504-8026-4AE3-9396-C557B57570D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.Shared", "Pingle.Shared\Pingle.Shared.csproj", "{55F7F6FF-65EA-4C75-B46B-CAE06623DCF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.Bootstrapper", "Pingle.Bootstrapper\Pingle.Bootstrapper.csproj", "{322AD761-5761-495B-A00F-E0BB5BE49DCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingle.Logic", "Pingle.Logic\Pingle.Logic.csproj", "{D97B93D5-5AAB-4030-AB46-1A45BF4CFC7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +31,19 @@ Global
 		{55F7F6FF-65EA-4C75-B46B-CAE06623DCF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F7F6FF-65EA-4C75-B46B-CAE06623DCF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55F7F6FF-65EA-4C75-B46B-CAE06623DCF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{322AD761-5761-495B-A00F-E0BB5BE49DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{322AD761-5761-495B-A00F-E0BB5BE49DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{322AD761-5761-495B-A00F-E0BB5BE49DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{322AD761-5761-495B-A00F-E0BB5BE49DCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D97B93D5-5AAB-4030-AB46-1A45BF4CFC7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D97B93D5-5AAB-4030-AB46-1A45BF4CFC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D97B93D5-5AAB-4030-AB46-1A45BF4CFC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D97B93D5-5AAB-4030-AB46-1A45BF4CFC7F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8F852E6E-B371-4DD3-A0B3-662E4B7C9BC3}
 	EndGlobalSection
 EndGlobal

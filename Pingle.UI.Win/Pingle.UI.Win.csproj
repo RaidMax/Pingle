@@ -6,9 +6,11 @@
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>enable</ImplicitUsings>
+        <ApplicationIcon>Pingle.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Pingle.Bootstrapper\Pingle.Bootstrapper.csproj" />
       <ProjectReference Include="..\Pingle.Shared\Pingle.Shared.csproj" />
     </ItemGroup>
 
