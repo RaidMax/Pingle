@@ -3,6 +3,7 @@ using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Pingle.Shared.Abstractions;
 using Pingle.Shared.Abstractions.Connection;
+using Pingle.UI.Win.Graphics;
 
 namespace Pingle.UI.Win;
 
@@ -42,7 +43,7 @@ public partial class BaseWindow : Form
         }
 
         StartPingButton.Enabled = false;
-        
+
         // todo: this should be done elsewhere
         IPAddress address;
         try
@@ -69,7 +70,6 @@ public partial class BaseWindow : Form
         IntervalSelectBox.Enabled = true;
         IPAddressTextBox.Enabled = true;
         StartPingButton.Text = "Start";
-        LatencyListBox.Items.Clear();
         LatencyValue.Text = "-";
         JitterValueLabel.Text = "-";
         _qualityMonitor?.Stop();
@@ -97,12 +97,12 @@ public partial class BaseWindow : Form
                 {
                     return;
                 }
-                
+
                 if (errorEvent.IsFatal)
                 {
                     ResetForm();
                 }
-                
+
                 MessageBox.Show(errorEvent.Message, "Error!", MessageBoxButtons.OK);
             });
         };
@@ -115,7 +115,7 @@ public partial class BaseWindow : Form
                 {
                     return;
                 }
-                
+
                 JitterValueLabel.Text = Math.Round(jitterEvent.Jitter, 3).ToString(CultureInfo.InvariantCulture);
             });
         };
@@ -128,15 +128,11 @@ public partial class BaseWindow : Form
                 {
                     return;
                 }
-                
+
                 LatencyValue.Text = Math.Round(latencyEvent.Latency, 3).ToString(CultureInfo.InvariantCulture);
 
-                if (LatencyListBox.Items.Count >= 25)
-                {
-                    LatencyListBox.Items.RemoveAt(0);
-                }
-
-                LatencyListBox.Items.Add(latencyEvent.Latency);
+                QualityGraph.Image ??= new Bitmap(QualityGraph.Width, QualityGraph.Height);
+                QualityGraph.Refresh();
             });
         };
     }
@@ -150,5 +146,39 @@ public partial class BaseWindow : Form
     {
         _qualityMonitor?.Stop();
         _qualityMonitor?.Dispose();
+    }
+
+    private void QualityGraph_Paint(object sender, PaintEventArgs e)
+    {
+        if (QualityGraph.Image is null || _qualityMonitor is null)
+        {
+            return;
+        }
+
+        var orderedSamples = _qualityMonitor.Samples.OrderBy(sample => sample.SampleTime).ToList();
+        var durationSamples = orderedSamples.Select(sample => new PointF(0, (float?)sample.Duration ?? 0)).ToArray();
+        var varianceSamples = orderedSamples.Select(sample => new PointF(0, (float?)sample.MedianVariance ?? 0)).ToArray();
+
+        var durationSet = new DataSet
+        {
+            Points = durationSamples,
+            DisplayInfo = new DisplayInfo
+            {
+                Label = "Duration",
+                Color = Color.MediumSlateBlue
+            }
+        };
+
+        var varianceSet = new DataSet
+        {
+            Points = varianceSamples,
+            DisplayInfo = new DisplayInfo
+            {
+                Label = "Variance",
+                Color = Color.DarkCyan
+            }
+        };
+
+        Graph.RenderGraphOnGraphics(e.Graphics, e.ClipRectangle, durationSet, varianceSet);
     }
 }

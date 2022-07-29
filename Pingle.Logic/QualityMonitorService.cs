@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System.Collections.Immutable;
+using System.Net;
 using Microsoft.Extensions.Logging;
 using Pingle.Shared.Abstractions;
 using Pingle.Shared.Abstractions.Connection;
 using Pingle.Shared.Events;
+using Pingle.Shared.QualityMonitoring;
 
 namespace Pingle.Logic;
 
@@ -12,6 +14,7 @@ public class QualityMonitorService : IQualityMonitor
     public EventHandler<LatencyUpdatedEvent>? OnLatencyUpdated { get; set; }
     public EventHandler<ErrorEncounteredEvent>? OnErrorEncountered { get; set; }
     public bool IsRunning { get; private set; }
+    public IReadOnlyList<IQualitySample> Samples => _qualityState.Samples.ToImmutableList();
 
     private readonly EndPoint _target;
     private readonly ILogger<QualityMonitorService> _logger;
@@ -22,7 +25,7 @@ public class QualityMonitorService : IQualityMonitor
     private CancellationTokenSource _tokenSource = new();
 
     // todo: driven by UI
-    private const int MaxJitterItems = 25;
+    private const int MaxSamples = 850;
 
     public QualityMonitorService(EndPoint target, ILogger<QualityMonitorService> logger,
         IEnumerable<IConnector> connectors)
@@ -97,20 +100,30 @@ public class QualityMonitorService : IQualityMonitor
             // logic for packet loss
         }
 
-        if (_qualityState.JitterHistory.Count >= MaxJitterItems)
+        if (_qualityState.Samples.Count >= MaxSamples)
         {
-            _qualityState.JitterHistory.Dequeue();
+            _qualityState.Samples.TryDequeue(out _);
         }
 
-        if (!_qualityState.JitterHistory.Any())
+        if (!_qualityState.Samples.Any())
         {
-            _qualityState.JitterHistory.Enqueue(0);
+            _qualityState.Samples.Enqueue(new QualitySample
+            {
+                Duration = 0,
+                Variance = 0
+            });
         }
 
+        var jitter = CalculateJitter();
+        
         if (result.Time is not null)
         {
-            _qualityState.JitterHistory.Enqueue(Math.Abs(result.Time.Value.Milliseconds -
-                                                         _qualityState.CurrentLatency));
+            _qualityState.Samples.Enqueue(new QualitySample
+            {
+                Duration = result.Time.Value.TotalMilliseconds ,
+                Variance = Math.Abs(result.Time.Value.TotalMilliseconds - _qualityState.CurrentLatency),
+                MedianVariance = jitter
+            });
         }
 
         if (result.Time.HasValue)
@@ -118,10 +131,7 @@ public class QualityMonitorService : IQualityMonitor
             _qualityState.CurrentLatency = result.Time.Value.TotalMilliseconds;
         }
 
-        if (_qualityState.JitterHistory.Any())
-        {
-            _qualityState.CurrentJitter = GetMedianJitter() ?? 0;
-        }
+        _qualityState.CurrentJitter = jitter;
 
         OnLatencyUpdated?.Invoke(this, new LatencyUpdatedEvent
         {
@@ -160,19 +170,28 @@ public class QualityMonitorService : IQualityMonitor
         _monitorTimer?.Change(TimeSpan.Zero, interval);
     }
 
-    private double? GetMedianJitter()
+    private double CalculateJitter()
     {
-        var even = _qualityState.JitterHistory.Count % 2 == 0;
-        var ordered = _qualityState.JitterHistory.OrderByDescending(c => c).ToList();
-        var median = ordered[_qualityState.JitterHistory.Count / 2];
+        var offset = _qualityState.Samples.Count >= 6 ? _qualityState.Samples.Count / 6 : 0;
+
+        var samples =
+            _qualityState.Samples.Where(sample => sample.Variance is not null).ToArray()[^offset..]
+                .OrderBy(sample => sample.Variance).ToArray();
+
+        if (!samples.Any())
+        {
+            return 0;
+        }
+
+        var middle = samples.Length / 2;
+        var median = samples[samples.Length / 2].Variance;
+        var even = samples.Length % 2 == 0;
 
         if (even)
         {
-            median =
-                (ordered[_qualityState.JitterHistory.Count / 2] + ordered[_qualityState.JitterHistory.Count / 2 - 1]) /
-                2.0;
+            median = (samples[middle].Variance + samples[middle - 1].Variance) / 2.0;
         }
 
-        return median;
+        return median.Value;
     }
 }

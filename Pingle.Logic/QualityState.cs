@@ -1,9 +1,11 @@
-﻿namespace Pingle.Logic;
+﻿using System.Collections.Concurrent;
+using Pingle.Shared.QualityMonitoring;
+
+namespace Pingle.Logic;
 
 public class QualityState
 {
-    public Queue<double?> JitterHistory { get; } = new();
-    public Queue<double?> LatencyHistory { get; } = new();
+    public ConcurrentQueue<QualitySample> Samples { get; } = new();
     public double CurrentLatency { get; set; }
     public double CurrentJitter { get; set; }
 }

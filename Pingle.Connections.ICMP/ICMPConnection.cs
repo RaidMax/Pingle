@@ -11,7 +11,7 @@ namespace Pingle.Connections.ICMP;
 public class ICMPConnection : IConnector
 {
     private readonly ILogger _logger;
-    private readonly Socket _socket;
+    private Socket? _socket;
     private readonly byte[] _buffer;
 
     private static readonly AddressFamily[] SupportedFamilies =
@@ -20,7 +20,6 @@ public class ICMPConnection : IConnector
     public ICMPConnection(ILogger<ICMPConnection> logger)
     {
         _logger = logger;
-        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp);
         _buffer = new byte[1024];
     }
 
@@ -29,9 +28,9 @@ public class ICMPConnection : IConnector
     {
         if (parameters.Endpoint is null)
         {
-            throw new ArgumentNullException(nameof(parameters.Endpoint), "Endpoint must provided");
+            throw new ArgumentNullException(nameof(parameters.Endpoint), "Endpoint must be provided");
         }
-        
+
         if (!SupportedFamilies.Contains(parameters.Endpoint.AddressFamily))
         {
             throw new ConnectorException("ICMP connector only supports IPv4 and IPv6");
@@ -44,7 +43,8 @@ public class ICMPConnection : IConnector
                 return await RawSocketImplementation(parameters, token);
             }
 
-            return await IpHelperApiImplementation((IPEndPoint)parameters.Endpoint, (int?)parameters.TimeOut?.TotalMilliseconds ?? 5000, token);
+            return await IpHelperApiImplementation((IPEndPoint)parameters.Endpoint,
+                (int?)parameters.TimeOut?.TotalMilliseconds ?? 5000, token);
         }
         catch (SocketException ex) when (ex.ErrorCode == 11001)
         {
@@ -55,17 +55,17 @@ public class ICMPConnection : IConnector
     protected async Task<IConnectionResult> RawSocketImplementation(IConnectionParameters parameters,
         CancellationToken token)
     {
-        PayloadContainer payload;
         Array.Clear(_buffer);
-      
-        if (parameters.Endpoint?.AddressFamily == AddressFamily.InterNetwork)
+
+        if (_socket is null || _socket.AddressFamily != parameters.Endpoint?.AddressFamily)
         {
-            payload = new ICMPv4Packet();
+            _socket = new Socket(parameters.Endpoint?.AddressFamily ?? AddressFamily.InterNetwork, SocketType.Raw,
+                (parameters.Endpoint?.AddressFamily ?? AddressFamily.InterNetwork) == AddressFamily.InterNetwork
+                    ? ProtocolType.Icmp
+                    : ProtocolType.IcmpV6);
         }
-        else
-        {
-            throw new ConnectorException("IPv6 is not implemented");
-        }
+
+        PayloadContainer payload = new ICMPPacket(addressFamily: _socket.AddressFamily);
 
         using var tokenSource = new CancellationTokenSource();
         // todo: move default somewhere
@@ -74,11 +74,11 @@ public class ICMPConnection : IConnector
 
         var timeSegments = new List<TimeSpan>();
         var bytesSent = 0;
-        
+
         try
         {
             var start = DateTime.UtcNow;
-            bytesSent = _socket.SendTo(payload.Payload, SocketFlags.None, parameters.Endpoint);
+            bytesSent = _socket.SendTo(payload.ToByteArray(), SocketFlags.None, parameters.Endpoint);
             timeSegments.Add(DateTime.UtcNow - start);
         }
         catch (Exception ex)
@@ -99,7 +99,8 @@ public class ICMPConnection : IConnector
         try
         {
             var start = DateTime.UtcNow;
-            result = await _socket.ReceiveFromAsync(_buffer, SocketFlags.None, parameters.Endpoint, combinedTokenSource.Token);
+            result = await _socket.ReceiveFromAsync(_buffer, SocketFlags.None, parameters.Endpoint,
+                combinedTokenSource.Token);
             timeSegments.Add(DateTime.UtcNow - start);
         }
         catch (OperationCanceledException)
@@ -113,6 +114,7 @@ public class ICMPConnection : IConnector
 
         if (result?.ReceivedBytes > 0)
         {
+            
             return new ICMPResult
             {
                 ResultType = ConnectionResultType.Complete,
@@ -126,7 +128,8 @@ public class ICMPConnection : IConnector
         };
     }
 
-    protected async Task<IConnectionResult> IpHelperApiImplementation(IPEndPoint endpoint, int timeout, CancellationToken token)
+    protected async Task<IConnectionResult> IpHelperApiImplementation(IPEndPoint endpoint, int timeout,
+        CancellationToken token)
     {
         var pingSender = new Ping();
         PingReply? result = null;

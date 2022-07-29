@@ -33,19 +33,20 @@ partial class BaseWindow
             this.StartPingButton = new System.Windows.Forms.Button();
             this.IPAddressTextBox = new System.Windows.Forms.TextBox();
             this.IPAddressLabel = new System.Windows.Forms.Label();
-            this.LatencyListBox = new System.Windows.Forms.ListBox();
             this.JitterLabel = new System.Windows.Forms.Label();
             this.JitterValueLabel = new System.Windows.Forms.Label();
             this.IntervalSelectBox = new System.Windows.Forms.ComboBox();
             this.IntervalLabel = new System.Windows.Forms.Label();
             this.LatencyLabel = new System.Windows.Forms.Label();
             this.LatencyValue = new System.Windows.Forms.Label();
+            this.QualityGraph = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.QualityGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // StartPingButton
             // 
             this.StartPingButton.Enabled = false;
-            this.StartPingButton.Location = new System.Drawing.Point(312, 25);
+            this.StartPingButton.Location = new System.Drawing.Point(314, 27);
             this.StartPingButton.Name = "StartPingButton";
             this.StartPingButton.Size = new System.Drawing.Size(75, 23);
             this.StartPingButton.TabIndex = 1;
@@ -64,26 +65,16 @@ partial class BaseWindow
             // IPAddressLabel
             // 
             this.IPAddressLabel.AutoSize = true;
-            this.IPAddressLabel.Location = new System.Drawing.Point(12, 9);
+            this.IPAddressLabel.Location = new System.Drawing.Point(12, 8);
             this.IPAddressLabel.Name = "IPAddressLabel";
             this.IPAddressLabel.Size = new System.Drawing.Size(62, 15);
             this.IPAddressLabel.TabIndex = 3;
             this.IPAddressLabel.Text = "Hostname";
             // 
-            // LatencyListBox
-            // 
-            this.LatencyListBox.Enabled = false;
-            this.LatencyListBox.FormattingEnabled = true;
-            this.LatencyListBox.ItemHeight = 15;
-            this.LatencyListBox.Location = new System.Drawing.Point(12, 56);
-            this.LatencyListBox.Name = "LatencyListBox";
-            this.LatencyListBox.Size = new System.Drawing.Size(167, 379);
-            this.LatencyListBox.TabIndex = 4;
-            // 
             // JitterLabel
             // 
             this.JitterLabel.AutoSize = true;
-            this.JitterLabel.Location = new System.Drawing.Point(274, 56);
+            this.JitterLabel.Location = new System.Drawing.Point(92, 68);
             this.JitterLabel.Name = "JitterLabel";
             this.JitterLabel.Size = new System.Drawing.Size(32, 15);
             this.JitterLabel.TabIndex = 5;
@@ -93,8 +84,8 @@ partial class BaseWindow
             // 
             this.JitterValueLabel.AutoSize = true;
             this.JitterValueLabel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.JitterValueLabel.ForeColor = System.Drawing.Color.Coral;
-            this.JitterValueLabel.Location = new System.Drawing.Point(274, 71);
+            this.JitterValueLabel.ForeColor = System.Drawing.Color.DarkCyan;
+            this.JitterValueLabel.Location = new System.Drawing.Point(92, 83);
             this.JitterValueLabel.Name = "JitterValueLabel";
             this.JitterValueLabel.Size = new System.Drawing.Size(20, 25);
             this.JitterValueLabel.TabIndex = 6;
@@ -104,7 +95,7 @@ partial class BaseWindow
             // 
             this.IntervalSelectBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.IntervalSelectBox.FormattingEnabled = true;
-            this.IntervalSelectBox.Location = new System.Drawing.Point(185, 26);
+            this.IntervalSelectBox.Location = new System.Drawing.Point(187, 27);
             this.IntervalSelectBox.Name = "IntervalSelectBox";
             this.IntervalSelectBox.Size = new System.Drawing.Size(121, 23);
             this.IntervalSelectBox.TabIndex = 7;
@@ -112,7 +103,7 @@ partial class BaseWindow
             // IntervalLabel
             // 
             this.IntervalLabel.AutoSize = true;
-            this.IntervalLabel.Location = new System.Drawing.Point(185, 8);
+            this.IntervalLabel.Location = new System.Drawing.Point(187, 8);
             this.IntervalLabel.Name = "IntervalLabel";
             this.IntervalLabel.Size = new System.Drawing.Size(46, 15);
             this.IntervalLabel.TabIndex = 8;
@@ -121,7 +112,7 @@ partial class BaseWindow
             // LatencyLabel
             // 
             this.LatencyLabel.AutoSize = true;
-            this.LatencyLabel.Location = new System.Drawing.Point(185, 56);
+            this.LatencyLabel.Location = new System.Drawing.Point(12, 68);
             this.LatencyLabel.Name = "LatencyLabel";
             this.LatencyLabel.Size = new System.Drawing.Size(48, 15);
             this.LatencyLabel.TabIndex = 9;
@@ -131,33 +122,47 @@ partial class BaseWindow
             // 
             this.LatencyValue.AutoSize = true;
             this.LatencyValue.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.LatencyValue.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.LatencyValue.Location = new System.Drawing.Point(185, 71);
+            this.LatencyValue.ForeColor = System.Drawing.Color.MediumSlateBlue;
+            this.LatencyValue.Location = new System.Drawing.Point(12, 83);
             this.LatencyValue.Name = "LatencyValue";
             this.LatencyValue.Size = new System.Drawing.Size(20, 25);
             this.LatencyValue.TabIndex = 10;
             this.LatencyValue.Text = "-";
             // 
+            // QualityGraph
+            // 
+            this.QualityGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.QualityGraph.Location = new System.Drawing.Point(12, 111);
+            this.QualityGraph.Name = "QualityGraph";
+            this.QualityGraph.Size = new System.Drawing.Size(459, 153);
+            this.QualityGraph.TabIndex = 11;
+            this.QualityGraph.TabStop = false;
+            this.QualityGraph.Paint += new System.Windows.Forms.PaintEventHandler(this.QualityGraph_Paint);
+            // 
             // BaseWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(483, 276);
+            this.Controls.Add(this.QualityGraph);
             this.Controls.Add(this.LatencyValue);
             this.Controls.Add(this.LatencyLabel);
             this.Controls.Add(this.IntervalLabel);
             this.Controls.Add(this.IntervalSelectBox);
             this.Controls.Add(this.JitterValueLabel);
             this.Controls.Add(this.JitterLabel);
-            this.Controls.Add(this.LatencyListBox);
             this.Controls.Add(this.IPAddressLabel);
             this.Controls.Add(this.IPAddressTextBox);
             this.Controls.Add(this.StartPingButton);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(499, 315);
             this.Name = "BaseWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pingle";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BaseWindow_FormClosing);
+            ((System.ComponentModel.ISupportInitialize)(this.QualityGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -167,11 +172,11 @@ partial class BaseWindow
     private Button StartPingButton;
     private TextBox IPAddressTextBox;
     private Label IPAddressLabel;
-    private ListBox LatencyListBox;
     private Label JitterLabel;
     private Label JitterValueLabel;
     private ComboBox IntervalSelectBox;
     private Label IntervalLabel;
     private Label LatencyLabel;
     private Label LatencyValue;
+    private PictureBox QualityGraph;
 }

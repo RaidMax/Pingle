@@ -2,5 +2,5 @@
 
 public interface PayloadContainer
 {
-    byte[] Payload { get; }
+    byte[] ToByteArray();
 }

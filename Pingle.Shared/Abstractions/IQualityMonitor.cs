@@ -24,4 +24,9 @@ public interface IQualityMonitor : IControllableService
     /// </summary>
     /// <param name="interval"><see cref="TimeSpan"/></param>
     void SetPollingInterval(TimeSpan interval);
+    
+    /// <summary>
+    /// Collection of samples
+    /// </summary>
+    IReadOnlyList<IQualitySample> Samples { get; }
 }
