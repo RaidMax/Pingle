@@ -25,7 +25,7 @@ public class QualityMonitorService : IQualityMonitor
     private CancellationTokenSource _tokenSource = new();
 
     // todo: driven by UI
-    private const int MaxSamples = 850;
+    private const int MaxSamples = 5000;
 
     public QualityMonitorService(EndPoint target, ILogger<QualityMonitorService> logger,
         IEnumerable<IConnector> connectors)
@@ -97,7 +97,11 @@ public class QualityMonitorService : IQualityMonitor
 
         if (result.ResultType == ConnectionResultType.Incomplete)
         {
-            // logic for packet loss
+            _qualityState.Samples.Enqueue(new QualitySample
+            {
+                Duration = null,
+                Variance = null
+            });
         }
 
         if (_qualityState.Samples.Count >= MaxSamples)

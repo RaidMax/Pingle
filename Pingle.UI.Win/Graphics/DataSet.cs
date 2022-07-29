@@ -3,5 +3,10 @@
 public class DataSet
 {
     public DisplayInfo DisplayInfo { get; set; } = new();
-    public PointF[] Points { get; set; } = Array.Empty<PointF>();
+    public DataItem[] Points { get; set; } = Array.Empty<DataItem>();
+}
+
+public class DataItem
+{
+    public PointF? Point { get; set; }
 }

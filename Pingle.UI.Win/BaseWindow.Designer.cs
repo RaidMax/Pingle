@@ -134,6 +134,7 @@ partial class BaseWindow
             this.QualityGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.QualityGraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.QualityGraph.Location = new System.Drawing.Point(12, 111);
             this.QualityGraph.Name = "QualityGraph";
             this.QualityGraph.Size = new System.Drawing.Size(459, 153);

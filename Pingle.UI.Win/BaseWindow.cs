@@ -156,8 +156,10 @@ public partial class BaseWindow : Form
         }
 
         var orderedSamples = _qualityMonitor.Samples.OrderBy(sample => sample.SampleTime).ToList();
-        var durationSamples = orderedSamples.Select(sample => new PointF(0, (float?)sample.Duration ?? 0)).ToArray();
-        var varianceSamples = orderedSamples.Select(sample => new PointF(0, (float?)sample.MedianVariance ?? 0)).ToArray();
+        var durationSamples = orderedSamples.Select(sample => new DataItem
+            { Point = sample.Duration.HasValue ? new PointF(0, (float)sample.Duration.Value) : null }).ToArray();
+        var varianceSamples = orderedSamples.Select(sample => new DataItem
+            { Point = sample.Variance.HasValue ? new PointF(0, (float)sample.Variance.Value) : null }).ToArray();
 
         var durationSet = new DataSet
         {
